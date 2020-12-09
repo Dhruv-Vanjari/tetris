@@ -1,7 +1,7 @@
 all: run
 
-build: main pixel
-	g++ main.o pixel.o -o tetris -lncurses
+build: main pixel block
+	g++ main.o pixel.o blockdata.o -o tetris -lncurses
 	rm -r *.o
 
 main: main.cpp
@@ -9,6 +9,11 @@ main: main.cpp
 
 pixel: pixel.cpp pixel.h
 	g++ pixel.cpp -c -lncurses
+
+block: blockdata
+
+blockdata: blockdata.cpp blockdata.h
+	g++ blockdata.cpp -c
 
 run: build
 	./tetris
