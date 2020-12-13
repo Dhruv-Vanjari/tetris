@@ -14,5 +14,5 @@ void drawPixel(int y, int x, WINDOW* win) {
 
 void endPixel(WINDOW* win) {
     wattroff(win, A_REVERSE);
-    refresh();
+    wrefresh(win);
 }
