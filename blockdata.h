@@ -27,9 +27,10 @@ private:
     void scanHorizontal();
 
 public:
-    BlockData(bool *);
+    BlockData(const bool *);
 
     friend class Block;
+    friend class Collision;
 };
 
 #endif

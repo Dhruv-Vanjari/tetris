@@ -1,7 +1,12 @@
 #include"./blockdata.h"
 #include<cstring>
 
-BlockData::BlockData(bool *pattern)
+BlockData::BlockData()
+{
+
+}
+
+BlockData::BlockData(const bool *pattern)
 {
     memset(d, 0, BLOCK_HEIGHT * BLOCK_WIDTH);
     memset(eh, -1, sizeof(int) *  BLOCK_HORIZONTAL * BLOCK_HEIGHT);
