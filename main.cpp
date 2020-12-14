@@ -2,10 +2,9 @@
 #include"blocks.h"
 #include<math.h>
 #include<unistd.h>
+#include<stdlib.h>
 
-void drawBlock(int index, int y, int x, bool invertColor = true);
-
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     initscr();
     noecho();
@@ -15,56 +14,41 @@ int main(int argc, char** argv)
     int scrH, scrW;
     getmaxyx(stdscr, scrH, scrW);
 
-    start_color();
 
-    init_pair(1, COLOR_GREEN, COLOR_BLACK);
+    WINDOW *win = newwin(scrH, scrW - (scrW % 2), 0, 0);
+    box(win, 0, 0);
+    wrefresh(win);
 
-    attron(A_REVERSE | COLOR_PAIR(1));
-    mvprintw(15, 18, "      ");
-    attroff(A_REVERSE | COLOR_PAIR(1));
+    Block o = Block(win, block[0], 3, 0);
+    Block b = Block(win, block[1], 4, scrW / 4);
+    Block d = Block(win, block[2], 5, 0);
+    Block h = Block(win, block[3], 5, 6);
 
-    box(stdscr, 0, 0);
-    refresh();
+    Block o1 = Block(win, block[0], 3, 0);
+    Block b1 = Block(win, block[1], 4, scrW / 4);
+    Block d1 = Block(win, block[3], 5, 2);
+    Block h1 = Block(win, block[0], 5, 6);
+    Block *bp[] =
+    {
+        &o, &b, &d, &h, &o1, &b1, &d1, &h1
+    };
 
-    int y1 = 10;
-    int y2 = 10;
+    int i = 0;
+    int maxBlocks = 7;
     while(true) {
-        int x = 10;
-        drawBlock(1, y1 -1, x, false);
-        drawBlock(1, y1, x);
-
-        drawBlock(0, y2 -1, 19, false);
-        drawBlock(0, y2, 19);
+        bp[i]->show();
+        if(bp[i]->moveVertical(DIR_DOWN)) {
+            i++;
+            if(i > maxBlocks)
+                break;
+        }
 
         sleep(1);
-
-        endPixel();
-
-        if((mvinch(y1+2, 1) & 0xff) != ' ')
-            break;
-
-        if((mvinch(y2 + 2, 19) & 0xFFFFFFFFFFFF00FF) != (' ' | A_REVERSE))
-            y2++;
-
-        y1++;
     }
-
+    wrefresh(win);
+    refresh();
 
     getch();
     endwin();
-
     return 0;
-}
-
-void drawBlock(int index, int y, int x, bool invertColor)
-{
-    for(int j = 0; j < 3; j++)
-        for(int i = 0; i < 3; i++) {
-            if(block[index][(3*j) + i]) {
-                if(invertColor)
-                    initPixel();
-                drawPixel(y+j,x+(2*i));
-                endPixel();
-            }
-        }
 }
