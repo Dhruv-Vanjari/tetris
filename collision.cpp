@@ -7,7 +7,7 @@ bool Collision::vertical(int dir, BlockData d, Position p)
 {
     for(int i = 0; i < BLOCK_WIDTH; i++) {
 
-        if(d.eh[(dir == 1) ? 1 : 0][i] == -1)
+        if(d.ev[(dir == 1) ? 1 : 0][i] == -1)
             continue;
 
         int y = d.ev[(dir == 1)? 1 : 0][i] + p.y;
