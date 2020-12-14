@@ -27,9 +27,9 @@ void BlockData::scanHorizontal()
     bool startScan = true;
 
     // horizontal start
-    for(int j = 0; j < 3; j++) {
+    for(int j = 0; j < BLOCK_HEIGHT; j++) {
         startScan = true;
-        for(int i = 0; i < 3; i++) {
+        for(int i = 0; i < BLOCK_WIDTH; i++) {
             if(startScan & d[j][i]) {
                 startScan = false;
                 eh[BLOCK_LEFT][j] = i;
@@ -53,9 +53,9 @@ void BlockData::scanVertical()
     bool startScan = true;
 
     // vertical start
-    for(int i = 0; i < 3; i++) {
+    for(int i = 0; i < BLOCK_WIDTH; i++) {
         startScan = true;
-        for(int j = 0; j < 3; j++) {
+        for(int j = 0; j < BLOCK_HEIGHT; j++) {
             if(startScan & d[j][i]) {
                 ev[BLOCK_UP][i] = j;
                 startScan = false;

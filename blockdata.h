@@ -1,8 +1,8 @@
 #ifndef _BLOCKDATA_H
 #define _BLOCKDATA_H
 
-#define BLOCK_HEIGHT 3
-#define BLOCK_WIDTH  3
+#define BLOCK_HEIGHT 4
+#define BLOCK_WIDTH  4
 
 #define BLOCK_VERTICAL   2   // edges to look for while moving vertically
 #define BLOCK_HORIZONTAL 2   // edges to look for while moving horizontally
