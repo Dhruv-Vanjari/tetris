@@ -1,5 +1,5 @@
 #include"pixel.h"
-#include"blocks.h"
+#include"block.h"
 #include<math.h>
 #include<unistd.h>
 #include<stdlib.h>

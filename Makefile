@@ -10,7 +10,7 @@ main: main.cpp
 pixel: pixel.cpp pixel.h
 	g++ pixel.cpp -c -lncurses
 
-block: blockdata block.cpp blocks.h
+block: blockdata block.cpp block.h
 	g++ block.cpp -c -lncurses
 
 blockdata: blockdata.cpp blockdata.h
