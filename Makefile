@@ -1,7 +1,7 @@
 all: run
 
-build: main pixel block collision
-	g++ main.o pixel.o block.o collision.o blockdata.o -o tetris -lncurses
+build: main pixel block collision origin
+	g++ main.o pixel.o block.o collision.o origin.o  blockdata.o -o tetris -lncurses
 	rm -r *.o
 
 main: main.cpp
@@ -18,6 +18,9 @@ blockdata: blockdata.cpp blockdata.h
 
 collision: collision.h collision.cpp
 	g++ collision.cpp -c -lncurses
+
+origin: origin.cpp origin.h
+	g++ origin.cpp -c -lncurses
 
 run: build
 	./tetris
