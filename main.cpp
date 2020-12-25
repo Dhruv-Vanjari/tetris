@@ -3,6 +3,10 @@
 #include<math.h>
 #include<unistd.h>
 #include<stdlib.h>
+#include<ctime>
+
+#define PLAYFIELD_HEIGHT 20
+#define PLAYFIELD_WIDTH 30
 
 int main(int argc, char **argv)
 {
@@ -10,40 +14,55 @@ int main(int argc, char **argv)
     noecho();
     cbreak();
     curs_set(false);
+    timeout(25);
 
     int scrH, scrW;
     getmaxyx(stdscr, scrH, scrW);
 
+    int fieldStartX, fieldStartY;
+    fieldStartY = (scrH / 2) - (PLAYFIELD_HEIGHT / 2);
+    fieldStartX = (scrW / 2) - (PLAYFIELD_WIDTH / 2);
 
-    WINDOW *win = newwin(scrH, scrW - (scrW % 2), 0, 0);
+    WINDOW *win = newwin(PLAYFIELD_HEIGHT, PLAYFIELD_WIDTH, fieldStartY, fieldStartX);
+    nodelay(win, true);
     box(win, 0, 0);
     wrefresh(win);
 
-    Block o = Block(win, block[0], 3, 0);
-    Block b = Block(win, block[1], 4, scrW / 4);
-    Block d = Block(win, block[2], 5, 0);
-    Block h = Block(win, block[3], 5, 6);
+    Block *bp = new Block(win, block[rand() % 7], 0, 0);
 
-    Block o1 = Block(win, block[0], 3, 0);
-    Block b1 = Block(win, block[1], 4, scrW / 4);
-    Block d1 = Block(win, block[3], 5, 2);
-    Block h1 = Block(win, block[0], 5, 6);
-    Block *bp[] =
-    {
-        &o, &b, &d, &h, &o1, &b1, &d1, &h1
-    };
-
-    int i = 0;
-    int maxBlocks = 7;
     while(true) {
-        bp[i]->show();
-        if(bp[i]->moveVertical(DIR_DOWN)) {
-            i++;
-            if(i > maxBlocks)
-                break;
+        char c = wgetch(win);
+
+        if(c == 'q') {
+            endwin();
+            return 0;
         }
 
-        sleep(1);
+        if(c == 'h')
+            bp->moveHorizontal(DIR_LEFT);
+        else if (c == 'l')
+            bp->moveHorizontal(DIR_RIGHT);
+        else if (c == 'j') {
+            if(bp->moveVertical(DIR_DOWN)) {
+                delete bp;
+                bp = new Block(win, block[rand() % 7], 0, 0);
+            }
+        } else if (c == 'k')
+            bp->moveVertical(DIR_UP);
+        else if (c == ' ') {
+            while(!bp->moveVertical(DIR_DOWN));
+            bp->show();
+            delete bp;
+            bp = new Block(win, block[rand() % 7], 0, 0);
+
+        } else if (c == 'i') {
+            bp->rotate(BLOCK_RIGHT);
+        } else if (c == 'o') {
+            bp->rotate(BLOCK_LEFT);
+        }
+
+        bp->show();
+        usleep(50000);
     }
     wrefresh(win);
     refresh();

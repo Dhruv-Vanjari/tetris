@@ -29,6 +29,7 @@ class Block
     Block(WINDOW *win, const bool *, int y, int x);
     bool moveVertical(int dir);
     bool moveHorizontal(int dir);
+    void rotate(bool dir);
     void show();
 
     friend class Collision;

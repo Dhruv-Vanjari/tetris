@@ -2,6 +2,7 @@
 #include"pixel.h"
 #include"collision.h"
 #include"origin.h"
+#include"rotate.h"
 
 Block::Block(WINDOW *win, const bool *bd, int y, int x)
 {
@@ -40,6 +41,20 @@ void Block::setOrigin()
     clear();
     moveToOrigin(d.d, newBlock);
     d = BlockData(newBlock);
+}
+
+void Block::rotate(bool dir)
+{
+    bool newMatrix[BLOCK_HEIGHT * BLOCK_WIDTH];
+
+    if(dir == BLOCK_RIGHT)
+        rotateRight(d.d, newMatrix);
+    else
+        rotateLeft(d.d, newMatrix);
+
+    clear();
+    d = BlockData(newMatrix);
+    setOrigin();
 }
 
 bool Block::moveVertical(int dir) {
