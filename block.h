@@ -23,7 +23,7 @@ class Block
     Block();
 
     void clear();
-    void setOrigin();
+    void setOrigin(bool matrix[]);
 
     public:
     Block(WINDOW *win, const bool *, int y, int x);
