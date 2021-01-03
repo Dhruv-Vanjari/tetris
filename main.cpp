@@ -4,6 +4,7 @@
 #include<unistd.h>
 #include<stdlib.h>
 #include<ctime>
+#include"collapse.h"
 
 #define PLAYFIELD_HEIGHT 20
 #define PLAYFIELD_WIDTH 30
@@ -30,6 +31,7 @@ int main(int argc, char **argv)
 
     Block *bp = new Block(win, block[rand() % 7], 0, 0);
 
+    Collapse collapse = Collapse(win);
     while(true) {
         char c = wgetch(win);
 
@@ -46,6 +48,8 @@ int main(int argc, char **argv)
             if(bp->moveVertical(DIR_DOWN)) {
                 delete bp;
                 bp = new Block(win, block[rand() % 7], 0, 0);
+                if(collapse.canCollapse(PLAYFIELD_HEIGHT - 2))
+                    collapse.row(PLAYFIELD_HEIGHT - 2);
             }
         } else if (c == 'k')
             bp->moveVertical(DIR_UP);
@@ -54,6 +58,8 @@ int main(int argc, char **argv)
             bp->show();
             delete bp;
             bp = new Block(win, block[rand() % 7], 0, 0);
+            if(collapse.canCollapse(PLAYFIELD_HEIGHT - 2))
+                collapse.row(PLAYFIELD_HEIGHT - 2);
 
         } else if (c == 'i') {
             bp->rotate(BLOCK_RIGHT);

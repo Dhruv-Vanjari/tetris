@@ -1,7 +1,7 @@
 all: run
 
-build: main pixel block collision origin rotate
-	g++ main.o pixel.o block.o collision.o origin.o rotate.o  blockdata.o -o tetris -lncurses
+build: main pixel block collision origin rotate collapse
+	g++ main.o pixel.o block.o collision.o origin.o rotate.o collapse.o blockdata.o -o tetris -lncurses
 	rm -r *.o
 
 main: main.cpp
@@ -24,6 +24,9 @@ origin: origin.cpp origin.h
 
 rotate: rotate.cpp rotate.h
 	g++ rotate.cpp -c -lncurses
+
+collapse: collapse.h collapse.cpp
+	g++ collapse.cpp -c -lncurses
 
 run: build
 	./tetris
