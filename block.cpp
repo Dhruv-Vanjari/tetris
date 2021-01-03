@@ -34,17 +34,24 @@ void Block::show()
     endPixel(pos.win);
 }
 
-void Block::setOrigin()
+void Block::setOrigin(bool matrix[])
 {
-    bool newBlock[BLOCK_HEIGHT * BLOCK_WIDTH];
+    Collision collision;
+    bool newMatrix[BLOCK_HEIGHT * BLOCK_WIDTH];
+    bool supplied[BLOCK_HEIGHT][BLOCK_WIDTH];
 
-    clear();
-    moveToOrigin(d.d, newBlock);
-    d = BlockData(newBlock);
+    for(int j = 0; j < BLOCK_HEIGHT; j++)
+        for(int i = 0; i < BLOCK_WIDTH; i++)
+            supplied[j][i] = matrix[(j * BLOCK_HEIGHT) + i];
+
+    moveToOrigin(supplied, newMatrix);
+    if(collision.canBePlaced(newMatrix, pos))
+        d = BlockData(newMatrix);
 }
 
 void Block::rotate(bool dir)
 {
+    Collision collision;
     bool newMatrix[BLOCK_HEIGHT * BLOCK_WIDTH];
 
     if(dir == BLOCK_RIGHT)
@@ -53,8 +60,7 @@ void Block::rotate(bool dir)
         rotateLeft(d.d, newMatrix);
 
     clear();
-    d = BlockData(newMatrix);
-    setOrigin();
+    setOrigin(newMatrix);
 }
 
 bool Block::moveVertical(int dir) {

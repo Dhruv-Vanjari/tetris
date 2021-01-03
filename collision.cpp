@@ -42,3 +42,19 @@ bool Collision::horizontal(int dir, BlockData d, Position p)
 
     return false;
 }
+
+bool Collision::canBePlaced(bool d[], Position p)
+{
+    int x, y;
+    for(int j = 0; j < BLOCK_HEIGHT; j++)
+        for(int i = 0; i < BLOCK_WIDTH; i++) {
+            y = p.y + j;
+            x = p.x + (i * Pixel::pixel);
+
+            if(d[(j*BLOCK_HEIGHT) + i])
+                if(mvwinch(p.win, y, x) != 32)
+                    return false;
+        }
+
+    return true;
+}

@@ -14,6 +14,7 @@ class Collision
 public:
     bool vertical(int dir, BlockData d, Position p);
     bool horizontal(int dir, BlockData d, Position p);
+    bool canBePlaced(bool d[], Position p);
 };
 
 #endif
