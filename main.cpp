@@ -5,75 +5,110 @@
 #include<stdlib.h>
 #include<ctime>
 #include"collapse.h"
+#include<chrono>
+#include<thread>
+#include<iostream>
 
 #define PLAYFIELD_HEIGHT 20
 #define PLAYFIELD_WIDTH 30
 
-int main(int argc, char **argv)
+WINDOW* playGround;
+Block *bp;
+Collapse* collapse;
+
+static bool quitGame = false;
+static bool pauseLowerBlock = false;
+static bool pauseKeyEvent = false;
+
+void keyEvent(void)
+{
+    while(true) {
+        char c = wgetch(playGround);
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        if(pauseKeyEvent)
+            continue;
+        if(quitGame)
+            break;
+
+        if(c == 'q')
+            quitGame = true;
+        else if(c == 'h') {
+        pauseLowerBlock = true;
+            bp->moveHorizontal(DIR_LEFT);
+            bp->show();
+        pauseLowerBlock = false;
+        } else if(c == 'l') {
+        pauseLowerBlock = true;
+            bp->moveHorizontal(DIR_RIGHT);
+            bp->show();
+        pauseLowerBlock = false;
+        } else if(c == 'i') {
+        pauseLowerBlock = true;
+            bp->rotate(DIR_LEFT);
+            bp->show();
+        pauseLowerBlock = false;
+        } else if(c == 'o') {
+        pauseLowerBlock = true;
+            bp->rotate(DIR_RIGHT);
+            bp->show();
+        pauseLowerBlock = false;
+        }
+
+    }
+}
+
+void _lowerBlock(void)
+{
+    if(bp->moveVertical(DIR_DOWN)) {
+        for(int i = bp->getPos().y; i < bp->getPos().y + BLOCK_HEIGHT; i++) {
+            if(i < PLAYFIELD_HEIGHT - 1 && collapse->canCollapse(i))
+                    collapse->row(i);
+        }
+        delete bp;
+        bp = new Block(playGround, block[rand() % 7], 0, 0);
+    }
+}
+
+void lowerBlock(void)
+{
+    while(true) {
+        if(pauseLowerBlock) {
+            // std::this_thread::sleep_for(std::chrono::seconds(1));
+            continue;
+        }
+
+        if(quitGame)
+            break;
+
+        pauseKeyEvent = true;
+        _lowerBlock();
+        bp->show();
+        pauseKeyEvent = false;
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+
+}
+
+int main(int argc, char** argv)
 {
     initscr();
     noecho();
     cbreak();
     curs_set(false);
-    timeout(25);
 
-    int scrH, scrW;
-    getmaxyx(stdscr, scrH, scrW);
+    playGround = newwin(PLAYFIELD_HEIGHT, PLAYFIELD_WIDTH, 0, 0);
+    bp = new Block(playGround, block[rand() % 7], 0, 0);
+    collapse = new Collapse(playGround);
 
-    int fieldStartX, fieldStartY;
-    fieldStartY = (scrH / 2) - (PLAYFIELD_HEIGHT / 2);
-    fieldStartX = (scrW / 2) - (PLAYFIELD_WIDTH / 2);
+    box(playGround, 0, 0);
+    wrefresh(playGround);
 
-    WINDOW *win = newwin(PLAYFIELD_HEIGHT, PLAYFIELD_WIDTH, fieldStartY, fieldStartX);
-    nodelay(win, true);
-    box(win, 0, 0);
-    wrefresh(win);
+    std::thread blockThread(lowerBlock);
+    std::thread keyThread(keyEvent);
+    blockThread.join();
+    keyThread.join();
 
-    Block *bp = new Block(win, block[rand() % 7], 0, 0);
 
-    Collapse collapse = Collapse(win);
-    while(true) {
-        char c = wgetch(win);
-
-        if(c == 'q') {
-            endwin();
-            return 0;
-        }
-
-        if(c == 'h')
-            bp->moveHorizontal(DIR_LEFT);
-        else if (c == 'l')
-            bp->moveHorizontal(DIR_RIGHT);
-        else if (c == 'j') {
-            if(bp->moveVertical(DIR_DOWN)) {
-                delete bp;
-                bp = new Block(win, block[rand() % 7], 0, 0);
-                if(collapse.canCollapse(PLAYFIELD_HEIGHT - 2))
-                    collapse.row(PLAYFIELD_HEIGHT - 2);
-            }
-        } else if (c == 'k')
-            bp->moveVertical(DIR_UP);
-        else if (c == ' ') {
-            while(!bp->moveVertical(DIR_DOWN));
-            bp->show();
-            delete bp;
-            bp = new Block(win, block[rand() % 7], 0, 0);
-            if(collapse.canCollapse(PLAYFIELD_HEIGHT - 2))
-                collapse.row(PLAYFIELD_HEIGHT - 2);
-
-        } else if (c == 'i') {
-            bp->rotate(BLOCK_RIGHT);
-        } else if (c == 'o') {
-            bp->rotate(BLOCK_LEFT);
-        }
-
-        bp->show();
-        usleep(50000);
-    }
-    wrefresh(win);
-    refresh();
-
-    getch();
     endwin();
     return 0;
 }

@@ -1,11 +1,11 @@
 all: run
 
 build: main pixel block collision origin rotate collapse
-	g++ main.o pixel.o block.o collision.o origin.o rotate.o collapse.o blockdata.o -o tetris -lncurses
+	g++ main.o pixel.o block.o collision.o origin.o rotate.o collapse.o blockdata.o -o tetris -lncurses -lpthread
 	rm -r *.o
 
 main: main.cpp
-	g++ main.cpp -c -lncurses
+	g++ main.cpp -c -lncurses -lpthread
 
 pixel: pixel.cpp pixel.h
 	g++ pixel.cpp -c -lncurses

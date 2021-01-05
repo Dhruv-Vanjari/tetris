@@ -27,6 +27,7 @@ class Block
 
     public:
     Block(WINDOW *win, const bool *, int y, int x);
+    Position getPos();
     bool moveVertical(int dir);
     bool moveHorizontal(int dir);
     void rotate(bool dir);

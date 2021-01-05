@@ -12,6 +12,11 @@ Block::Block(WINDOW *win, const bool *bd, int y, int x)
     pos.win = win;
 }
 
+Position Block::getPos()
+{
+    return pos;
+}
+
 void Block::clear()
 {
     // clear pixels where the block currently is
